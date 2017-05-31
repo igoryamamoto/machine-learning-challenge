@@ -1,0 +1,5 @@
+{"source": "None", "page_type": "cart", "uid": "54cfe1703c536e98bf02c7c4cd5b4e280f07d74c", "event_type": "pageview", "timestamp": "2016-01-01"}
+{"source": "None", "page_type": "checkout", "uid": "c808d5ecb73bee00a9730064b7652bec10778f20", "event_type": "pageview", "timestamp": "2016-01-02"}
+{"source": "None", "page_type": "checkout", "uid": "7ba0cbaaf2000d440b474ff9182383c5525d0d56", "event_type": "pageview", "timestamp": "2016-01-02"}
+{"source": "None", "page_type": "confirmation", "uid": "3b2790a1f746e59298c8c277e3ec2279343ce52d", "event_type": "pageview", "timestamp": "2016-01-02"}
+{"source": "None", "page_type": "checkout", "uid": "3b2790a1f746e59298c8c277e3ec2279343ce52d", "event_type": "pageview", "timestamp": "2016-01-02"}
