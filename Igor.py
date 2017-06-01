@@ -125,12 +125,15 @@ purchase2.info()
 # ---
 # # Machine Learning Algorithms
 
-# In[55]:
+# In[65]:
 
 
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
+from sklearn import metrics
 
 
 # ## Separate train and test data
@@ -157,13 +160,13 @@ x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.4, random_
 
 # ## Naive Bayes
 
-# In[52]:
+# In[66]:
 
 
-get_ipython().run_cell_magic(u'time', u'', u'gnb = GaussianNB()\ngnb.fit(x_train, y_train)\ny_pred = gnb.predict(x_test)\nscore = gnb.score(x_train, y_train)')
+get_ipython().run_cell_magic(u'time', u'', u'gnb = GaussianNB()\ngnb.fit(x_train, y_train)\ny_pred = gnb.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
 
 
-# In[53]:
+# In[67]:
 
 
 score
@@ -171,19 +174,38 @@ score
 
 # ## KNeighborsClassifier
 
-# In[56]:
+# In[68]:
 
 
-knn = KNeighborsClassifier(n_neighbors=4)
-knn.fit(x_train, y_train)
-y_pred = knn.predict(x_test)
-score = knn.score(x_train, y_train)
+get_ipython().run_cell_magic(u'time', u'', u'knn = KNeighborsClassifier(n_neighbors=1)\nknn.fit(x_train, y_train)\ny_pred = knn.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
 
 
-# In[57]:
+# In[69]:
 
 
 score
+
+
+# ## Decision Tree
+
+# In[71]:
+
+
+get_ipython().run_cell_magic(u'time', u'', u'tree = DecisionTreeClassifier()\ntree.fit(x_train, y_train)\ny_pred = tree.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
+
+
+# In[72]:
+
+
+score
+
+
+# ## Forest Tree
+
+# In[73]:
+
+
+get_ipython().run_cell_magic(u'time', u'', u'forest = RandomForestClassifier()\nforest.fit(x_train, y_train)\ny_pred = tree.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
 
 
 # In[ ]:
