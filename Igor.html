@@ -11769,7 +11769,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -11777,12 +11777,21 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
+<span class="kn">from</span> <span class="nn">pandas.io.json</span> <span class="kn">import</span> <span class="n">json_normalize</span>
 </pre></div>
 
 </div>
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Open-Catalog-dataset">Open Catalog dataset<a class="anchor-link" href="#Open-Catalog-dataset">&#194;&#182;</a></h2>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -11903,9 +11912,17 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Open-dataset-with-a-JSON-object-per-line-with-NaN">Open dataset with a JSON object per line with NaN<a class="anchor-link" href="#Open-dataset-with-a-JSON-object-per-line-with-NaN">&#194;&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[66]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
@@ -11931,8 +11948,8 @@ data = pd.DataFrame(json_records)
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 8 ms, sys: 4 ms, total: 12 ms
-Wall time: 8.43 ms
+<pre>CPU times: user 4 ms, sys: 0 ns, total: 4 ms
+Wall time: 58.3 ms
 </pre>
 </div>
 </div>
@@ -11943,7 +11960,7 @@ Wall time: 8.43 ms
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -11959,7 +11976,7 @@ Wall time: 8.43 ms
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[67]:</div>
+<div class="prompt output_prompt">Out[5]:</div>
 
 
 
@@ -12059,9 +12076,17 @@ Wall time: 8.43 ms
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Open-only-purchase-events-from-data-dataset">Open only purchase events from data dataset<a class="anchor-link" href="#Open-only-purchase-events-from-data-dataset">&#194;&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[98]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
@@ -12087,8 +12112,8 @@ purchase = pd.DataFrame(json_records)
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 580 ms, sys: 12 ms, total: 592 ms
-Wall time: 627 ms
+<pre>CPU times: user 652 ms, sys: 36 ms, total: 688 ms
+Wall time: 747 ms
 </pre>
 </div>
 </div>
@@ -12099,7 +12124,7 @@ Wall time: 627 ms
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[99]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -12115,7 +12140,7 @@ Wall time: 627 ms
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[99]:</div>
+<div class="prompt output_prompt">Out[7]:</div>
 
 
 
@@ -12191,6 +12216,304 @@ Wall time: 627 ms
       <td>[{u'pid': u'fca1dc5059edb8a8ee2fa424ce7a01958b...</td>
       <td>NaN</td>
       <td>79ddd2b0c65947a8a11249c2fa71499055507e11</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Unnest-products">Unnest products<a class="anchor-link" href="#Unnest-products">&#194;&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
+with open(&#39;data/purchase_data&#39;, &#39;r&#39;) as f:
+    json_records = []
+    for line in f:
+        record = json.loads(line)
+        products = record.pop(&#39;products&#39;)
+        record.pop(&#39;source&#39;)
+        record.pop(&#39;event_type&#39;)
+        for obj in products:
+            new_record = record.copy()
+            new_record.update(obj)
+            json_records.append(new_record)
+purchase = pd.DataFrame(json_records)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 596 ms, sys: 0 ns, total: 596 ms
+Wall time: 594 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[43]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>gender</th>
+      <th>pid</th>
+      <th>quantity</th>
+      <th>uid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2017-03-27 14:19:00</td>
+      <td>M</td>
+      <td>db3eae1855619bd4462848bb7b473b219345ee87</td>
+      <td>1.0</td>
+      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2017-03-27 14:19:00</td>
+      <td>M</td>
+      <td>3aed9b0313f9226111de8aeabaedccf8db07d428</td>
+      <td>1.0</td>
+      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2016-05-26 11:21:40</td>
+      <td>M</td>
+      <td>418e19155782fc7f12ced8332c8ed025aec227a5</td>
+      <td>1.0</td>
+      <td>07be0ebd1e6f2412e4a9a3f679ded05796a1e225</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2016-03-05 06:52:27</td>
+      <td>M</td>
+      <td>4b17c3aa28d53208c9fd147057b40fdd8108f790</td>
+      <td>1.0</td>
+      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2016-03-05 06:52:27</td>
+      <td>M</td>
+      <td>31771f432cbc8e7ee3140f70b1e866fb5a2d739a</td>
+      <td>1.0</td>
+      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Using-json_normalize">Using json_normalize<a class="anchor-link" href="#Using-json_normalize">&#194;&#182;</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
+with open(&#39;data/purchase_data&#39;, &#39;r&#39;) as f:
+    json_records = []
+    for line in f:
+        record = json.loads(line)
+        json_records.append(record)
+purchase = json_normalize(json_records, &#39;products&#39;, [&#39;uid&#39;,&#39;date&#39;,&#39;gender&#39;])
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 760 ms, sys: 12 ms, total: 772 ms
+Wall time: 770 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[49]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[49]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pid</th>
+      <th>quantity</th>
+      <th>date</th>
+      <th>gender</th>
+      <th>uid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>db3eae1855619bd4462848bb7b473b219345ee87</td>
+      <td>1.0</td>
+      <td>2017-03-27 14:19:00</td>
+      <td>M</td>
+      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3aed9b0313f9226111de8aeabaedccf8db07d428</td>
+      <td>1.0</td>
+      <td>2017-03-27 14:19:00</td>
+      <td>M</td>
+      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>418e19155782fc7f12ced8332c8ed025aec227a5</td>
+      <td>1.0</td>
+      <td>2016-05-26 11:21:40</td>
+      <td>M</td>
+      <td>07be0ebd1e6f2412e4a9a3f679ded05796a1e225</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4b17c3aa28d53208c9fd147057b40fdd8108f790</td>
+      <td>1.0</td>
+      <td>2016-03-05 06:52:27</td>
+      <td>M</td>
+      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>31771f432cbc8e7ee3140f70b1e866fb5a2d739a</td>
+      <td>1.0</td>
+      <td>2016-03-05 06:52:27</td>
+      <td>M</td>
+      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
     </tr>
   </tbody>
 </table>
