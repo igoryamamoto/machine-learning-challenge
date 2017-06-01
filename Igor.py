@@ -263,6 +263,30 @@ len(users)
 len(set(users))
 
 
+# In[37]:
+
+
+ans = []
+for i,u in enumerate(users):
+    if answer[i]:
+        g = 'M'
+    else:
+        g = 'F'
+    obj = {'a':u, 'b':g}
+    ans.append(obj)
+
+
+# In[39]:
+
+
+import csv
+
+with open('ans.csv', 'wb') as f:
+    w = csv.DictWriter(f, fieldnames=['a','b'])
+    for obj in ans:
+        w.writerow(obj)
+
+
 # In[ ]:
 
 
