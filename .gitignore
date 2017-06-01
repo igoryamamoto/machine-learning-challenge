@@ -1,5 +1,8 @@
 # Datasets
-data/*gz
+data/data*
+data/catalog*
+data/target*
+data/p*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
