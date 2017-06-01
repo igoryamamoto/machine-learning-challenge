@@ -12882,6 +12882,7 @@ memory usage: 6.4+ MB
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 </pre></div>
 
@@ -12900,7 +12901,7 @@ memory usage: 6.4+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[45]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">features</span> <span class="o">=</span> <span class="n">purchase2</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
@@ -12914,7 +12915,7 @@ memory usage: 6.4+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[50]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">X</span> <span class="o">=</span> <span class="n">purchase2</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
@@ -12928,7 +12929,7 @@ memory usage: 6.4+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[71]:</div>
+<div class="prompt input_prompt">In&nbsp;[51]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
@@ -12939,15 +12940,37 @@ memory usage: 6.4+ MB
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Naive-Bayes">Naive Bayes<a class="anchor-link" href="#Naive-Bayes">&#194;&#182;</a></h2>
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="prompt input_prompt">In&nbsp;[52]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">gnb</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
-<span class="n">gnb</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">gnb</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
-<span class="n">score</span> <span class="o">=</span> <span class="n">gnb</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
+gnb = GaussianNB()
+gnb.fit(x_train, y_train)
+y_pred = gnb.predict(x_test)
+score = gnb.score(x_train, y_train)
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[53]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
 </pre></div>
 
 </div>
@@ -12960,42 +12983,72 @@ memory usage: 6.4+ MB
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[53]:</div>
 
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-72-842e125e25f0&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> gnb <span class="ansi-blue-fg">=</span> GaussianNB<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>gnb<span class="ansi-blue-fg">.</span>fit<span class="ansi-blue-fg">(</span>x_train<span class="ansi-blue-fg">,</span> y_train<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      3</span> y_pred <span class="ansi-blue-fg">=</span> gnb<span class="ansi-blue-fg">.</span>predict<span class="ansi-blue-fg">(</span>x_test<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">      4</span> score <span class="ansi-blue-fg">=</span> gnb<span class="ansi-blue-fg">.</span>score<span class="ansi-blue-fg">(</span>x_train<span class="ansi-blue-fg">,</span> y_train<span class="ansi-blue-fg">)</span>
 
-<span class="ansi-green-fg">/usr/local/lib/python2.7/dist-packages/sklearn/naive_bayes.pyc</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(self, X, y, sample_weight)</span>
-<span class="ansi-green-intense-fg ansi-bold">    180</span>             Returns self<span class="ansi-blue-fg">.</span>
-<span class="ansi-green-intense-fg ansi-bold">    181</span>         &#34;&#34;&#34;
-<span class="ansi-green-fg">--&gt; 182</span><span class="ansi-red-fg">         </span>X<span class="ansi-blue-fg">,</span> y <span class="ansi-blue-fg">=</span> check_X_y<span class="ansi-blue-fg">(</span>X<span class="ansi-blue-fg">,</span> y<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    183</span>         return self._partial_fit(X, y, np.unique(y), _refit=True,
-<span class="ansi-green-intense-fg ansi-bold">    184</span>                                  sample_weight=sample_weight)
 
-<span class="ansi-green-fg">/usr/local/lib/python2.7/dist-packages/sklearn/utils/validation.pyc</span> in <span class="ansi-cyan-fg">check_X_y</span><span class="ansi-blue-fg">(X, y, accept_sparse, dtype, order, copy, force_all_finite, ensure_2d, allow_nd, multi_output, ensure_min_samples, ensure_min_features, y_numeric, warn_on_dtype, estimator)</span>
-<span class="ansi-green-intense-fg ansi-bold">    519</span>     X = check_array(X, accept_sparse, dtype, order, copy, force_all_finite,
-<span class="ansi-green-intense-fg ansi-bold">    520</span>                     ensure_2d<span class="ansi-blue-fg">,</span> allow_nd<span class="ansi-blue-fg">,</span> ensure_min_samples<span class="ansi-blue-fg">,</span>
-<span class="ansi-green-fg">--&gt; 521</span><span class="ansi-red-fg">                     ensure_min_features, warn_on_dtype, estimator)
-</span><span class="ansi-green-intense-fg ansi-bold">    522</span>     <span class="ansi-green-fg">if</span> multi_output<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">    523</span>         y = check_array(y, &#39;csr&#39;, force_all_finite=True, ensure_2d=False,
-
-<span class="ansi-green-fg">/usr/local/lib/python2.7/dist-packages/sklearn/utils/validation.pyc</span> in <span class="ansi-cyan-fg">check_array</span><span class="ansi-blue-fg">(array, accept_sparse, dtype, order, copy, force_all_finite, ensure_2d, allow_nd, ensure_min_samples, ensure_min_features, warn_on_dtype, estimator)</span>
-<span class="ansi-green-intense-fg ansi-bold">    380</span>                                       force_all_finite)
-<span class="ansi-green-intense-fg ansi-bold">    381</span>     <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 382</span><span class="ansi-red-fg">         </span>array <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>array<span class="ansi-blue-fg">(</span>array<span class="ansi-blue-fg">,</span> dtype<span class="ansi-blue-fg">=</span>dtype<span class="ansi-blue-fg">,</span> order<span class="ansi-blue-fg">=</span>order<span class="ansi-blue-fg">,</span> copy<span class="ansi-blue-fg">=</span>copy<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    383</span> 
-<span class="ansi-green-intense-fg ansi-bold">    384</span>         <span class="ansi-green-fg">if</span> ensure_2d<span class="ansi-blue-fg">:</span>
-
-<span class="ansi-red-fg">ValueError</span>: could not convert string to float: c37df0ae71b97699a478def3001a3516a905a51d</pre>
+<div class="output_text output_subarea output_execute_result">
+<pre>0.47143483343074227</pre>
 </div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="KNeighborsClassifier">KNeighborsClassifier<a class="anchor-link" href="#KNeighborsClassifier">&#194;&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[56]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">knn</span> <span class="o">=</span> <span class="n">KNeighborsClassifier</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">knn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">knn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">knn</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[57]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[57]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.64045149035651661</pre>
+</div>
+
 </div>
 
 </div>

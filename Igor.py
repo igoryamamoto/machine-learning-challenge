@@ -129,38 +129,61 @@ purchase2.info()
 
 
 from sklearn.naive_bayes import GaussianNB
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 
 
 # ## Separate train and test data
 
-# In[43]:
+# In[45]:
 
 
 features = purchase2.columns[6:-1]
 target = purchase2.columns[-1]
 
 
-# In[44]:
+# In[50]:
 
 
 X = purchase2[features]
 Y = purchase2[target]
 
 
-# In[71]:
+# In[51]:
 
 
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.4, random_state=42)
 
 
-# In[72]:
+# ## Naive Bayes
+
+# In[52]:
 
 
-gnb = GaussianNB()
-gnb.fit(x_train, y_train)
-y_pred = gnb.predict(x_test)
-score = gnb.score(x_train, y_train)
+get_ipython().run_cell_magic(u'time', u'', u'gnb = GaussianNB()\ngnb.fit(x_train, y_train)\ny_pred = gnb.predict(x_test)\nscore = gnb.score(x_train, y_train)')
+
+
+# In[53]:
+
+
+score
+
+
+# ## KNeighborsClassifier
+
+# In[56]:
+
+
+knn = KNeighborsClassifier(n_neighbors=4)
+knn.fit(x_train, y_train)
+y_pred = knn.predict(x_test)
+score = knn.score(x_train, y_train)
+
+
+# In[57]:
+
+
+score
 
 
 # In[ ]:
