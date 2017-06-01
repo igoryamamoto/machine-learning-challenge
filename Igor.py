@@ -122,10 +122,27 @@ purchase2 = new_purchase.drop(dummy_cols, 1)
 purchase2.info()
 
 
+# ## Add date as a feature
+
+# In[156]:
+
+
+from datetime import datetime
+for i,d in enumerate(purchase2.date.values):
+    weekday = datetime.strptime(d, "%Y-%m-%d %H:%M:%S").weekday()
+    purchase2.date.values[i] = weekday
+
+
+# In[157]:
+
+
+purchase2.head()
+
+
 # ---
 # # Machine Learning Algorithms
 
-# In[8]:
+# In[169]:
 
 
 from sklearn.naive_bayes import GaussianNB
@@ -134,45 +151,72 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import train_test_split
 from sklearn import metrics
+from sklearn.ensemble import GradientBoostingClassifier
 
 
 # ## Separate train and test data
 
-# In[9]:
+# In[170]:
 
 
 features = purchase2.columns[6:-1]
 target = purchase2.columns[-1]
 
 
+# In[171]:
+
+
+features = ['current_price', 'date']+list(features)
+
+
+# In[172]:
+
+
+purchase2.current_price.values
+
+
 # ## Gambiarra : nem todas as features tão no target
 
-# In[10]:
+# In[173]:
 
 
-get_ipython().run_cell_magic(u'time', u'', u"with open('data/purchase_target', 'r') as f:\n    json_records = []\n    for line in f:\n        record = json.loads(line)\n        json_records.append(record)\npurchase3 = json_normalize(json_records, 'products', ['uid','date'])\npurchase3 = purchase3.join(catalog.set_index('pid'), on='pid')\ncategorical = ['category', 'sub_category', 'sub_sub_category']\nnew_purchase2 = pd.get_dummies(purchase3, columns=categorical)\ndummy_cols = ['category_c1bd5fd999bd577743936898ada96496b547af3c',\n'sub_category_f08770a96fb546673053ab799f5ea9cada06c06a',\n'sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24']\npurchase4 = new_purchase2.drop(dummy_cols, 1)\nfeatures2 = purchase4.columns[6:]")
+get_ipython().run_cell_magic(u'time', u'', u'with open(\'data/purchase_target\', \'r\') as f:\n    json_records = []\n    for line in f:\n        record = json.loads(line)\n        json_records.append(record)\npurchase3 = json_normalize(json_records, \'products\', [\'uid\',\'date\'])\npurchase3 = purchase3.join(catalog.set_index(\'pid\'), on=\'pid\')\ncategorical = [\'category\', \'sub_category\', \'sub_sub_category\']\nnew_purchase2 = pd.get_dummies(purchase3, columns=categorical)\ndummy_cols = [\'category_c1bd5fd999bd577743936898ada96496b547af3c\',\n\'sub_category_f08770a96fb546673053ab799f5ea9cada06c06a\',\n\'sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24\']\npurchase4 = new_purchase2.drop(dummy_cols, 1)\nfeatures2 = [\'current_price\', \'date\']+list(purchase4.columns[6:])\n\nfrom datetime import datetime\nfor i,d in enumerate(purchase4.date.values):\n    try:\n        weekday = datetime.strptime(d, "%Y-%m-%d %H:%M:%S").weekday()\n    except ValueError:\n        weekday = datetime.strptime(d, "%Y-%m-%d").weekday()\n    purchase4.date.values[i] = weekday')
 
 
-# In[11]:
+# In[174]:
 
 
 new_features = list(set(features)&set(features2))
 
 
-# In[13]:
+# In[175]:
 
 
 X = purchase2[new_features]
 Y = purchase2[target]
 
 
-# In[14]:
+# In[176]:
+
+
+for i,val in enumerate(X.current_price.values):
+    if np.isnan(val):
+        X.current_price.values[i] = 0
+
+
+# In[177]:
+
+
+True in np.isnan(X.current_price.values)
+
+
+# In[178]:
 
 
 x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.4, random_state=42)
 
 
-# In[15]:
+# In[179]:
 
 
 len(x_train.columns)
@@ -180,13 +224,13 @@ len(x_train.columns)
 
 # ## Naive Bayes
 
-# In[16]:
+# In[180]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u'gnb = GaussianNB()\ngnb.fit(x_train, y_train)\ny_pred = gnb.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
 
 
-# In[17]:
+# In[181]:
 
 
 score
@@ -194,13 +238,13 @@ score
 
 # ## KNeighborsClassifier
 
-# In[19]:
+# In[182]:
 
 
-get_ipython().run_cell_magic(u'time', u'', u'knn = KNeighborsClassifier(n_neighbors=1)\nknn.fit(x_train, y_train)\ny_pred = knn.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
+get_ipython().run_cell_magic(u'time', u'', u'knn = KNeighborsClassifier(n_neighbors=6)\nknn.fit(x_train, y_train)\ny_pred = knn.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
 
 
-# In[20]:
+# In[183]:
 
 
 score
@@ -208,13 +252,13 @@ score
 
 # ## Decision Tree
 
-# In[21]:
+# In[184]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u'tree = DecisionTreeClassifier()\ntree.fit(x_train, y_train)\ny_pred = tree.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
 
 
-# In[22]:
+# In[185]:
 
 
 score
@@ -222,13 +266,27 @@ score
 
 # ## Forest Tree
 
-# In[23]:
+# In[186]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u'forest = RandomForestClassifier()\nforest.fit(x_train, y_train)\ny_pred = tree.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
 
 
-# In[24]:
+# In[187]:
+
+
+score
+
+
+# ## xgboost
+
+# In[188]:
+
+
+get_ipython().run_cell_magic(u'time', u'', u'boost = GradientBoostingClassifier()\nboost.fit(x_train, y_train)\ny_pred = boost.predict(x_test)\nscore = metrics.accuracy_score(y_test, y_pred)')
+
+
+# In[189]:
 
 
 score
@@ -236,6 +294,8 @@ score
 
 # ---
 # # Generate output
+
+# ## First attempt
 
 # In[25]:
 
@@ -282,6 +342,56 @@ for i,u in enumerate(users):
 import csv
 
 with open('ans.csv', 'wb') as f:
+    w = csv.DictWriter(f, fieldnames=['a','b'])
+    for obj in ans:
+        w.writerow(obj)
+
+
+# ## Second Attempt
+
+# In[137]:
+
+
+X = purchase4[new_features]
+for i,val in enumerate(X.current_price.values):
+    if np.isnan(val):
+        X.current_price.values[i] = 0
+True in np.isnan(X.current_price.values)
+answer = boost.predict(X)
+ans = []
+for i,u in enumerate(users):
+    if answer[i]:
+        g = 'M'
+    else:
+        g = 'F'
+    obj = {'a':u, 'b':g}
+    ans.append(obj)
+with open('ans2.csv', 'wb') as f:
+    w = csv.DictWriter(f, fieldnames=['a','b'])
+    for obj in ans:
+        w.writerow(obj)
+
+
+# ## Third Attempt
+
+# In[190]:
+
+
+X = purchase4[new_features]
+for i,val in enumerate(X.current_price.values):
+    if np.isnan(val):
+        X.current_price.values[i] = 0
+True in np.isnan(X.current_price.values)
+answer = boost.predict(X)
+ans = []
+for i,u in enumerate(users):
+    if answer[i]:
+        g = 'M'
+    else:
+        g = 'F'
+    obj = {'a':u, 'b':g}
+    ans.append(obj)
+with open('ans2.csv', 'wb') as f:
     w = csv.DictWriter(f, fieldnames=['a','b'])
     for obj in ans:
         w.writerow(obj)
