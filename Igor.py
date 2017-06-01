@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[44]:
+# In[2]:
 
 
 import pandas as pd
@@ -10,11 +10,14 @@ import json
 import gzip
 import seaborn as sns
 from pandas.io.json import json_normalize
+get_ipython().magic(u'matplotlib inline')
 
+
+# # Data Cleaning
 
 # ## Open Catalog dataset
 
-# In[2]:
+# In[15]:
 
 
 catalog = pd.read_csv('data/catalog.gz')
@@ -70,7 +73,7 @@ purchase.head()
 
 # ### Using json_normalize
 
-# In[48]:
+# In[14]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u"with open('data/purchase_data', 'r') as f:\n    json_records = []\n    for line in f:\n        record = json.loads(line)\n        json_records.append(record)\npurchase = json_normalize(json_records, 'products', ['uid','date','gender'])")
@@ -80,6 +83,84 @@ get_ipython().run_cell_magic(u'time', u'', u"with open('data/purchase_data', 'r'
 
 
 purchase.head()
+
+
+# In[16]:
+
+
+purchase = purchase.join(catalog.set_index('pid'), on='pid')
+
+
+# In[18]:
+
+
+purchase.info()
+
+
+# In[28]:
+
+
+categorical = ['category', 'sub_category', 'sub_sub_category','gender']
+new_purchase = pd.get_dummies(purchase, columns=categorical)
+new_purchase.info()
+
+
+# In[23]:
+
+
+new_purchase.head()
+
+
+# In[29]:
+
+
+dummy_cols = ['category_c1bd5fd999bd577743936898ada96496b547af3c',
+'sub_category_f08770a96fb546673053ab799f5ea9cada06c06a',
+'sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24',
+'gender_F']
+purchase2 = new_purchase.drop(dummy_cols, 1)
+purchase2.info()
+
+
+# ---
+# # Machine Learning Algorithms
+
+# In[55]:
+
+
+from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import train_test_split
+
+
+# ## Separate train and test data
+
+# In[43]:
+
+
+features = purchase2.columns[6:-1]
+target = purchase2.columns[-1]
+
+
+# In[44]:
+
+
+X = purchase2[features]
+Y = purchase2[target]
+
+
+# In[71]:
+
+
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.4, random_state=42)
+
+
+# In[72]:
+
+
+gnb = GaussianNB()
+gnb.fit(x_train, y_train)
+y_pred = gnb.predict(x_test)
+score = gnb.score(x_train, y_train)
 
 
 # In[ ]:

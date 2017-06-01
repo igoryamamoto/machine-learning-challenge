@@ -11769,7 +11769,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -11778,6 +11778,7 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 <span class="kn">from</span> <span class="nn">pandas.io.json</span> <span class="kn">import</span> <span class="n">json_normalize</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 
 </div>
@@ -11789,13 +11790,21 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Data-Cleaning">Data Cleaning<a class="anchor-link" href="#Data-Cleaning">&#194;&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Open-Catalog-dataset">Open Catalog dataset<a class="anchor-link" href="#Open-Catalog-dataset">&#194;&#182;</a></h2>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">catalog</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/catalog.gz&#39;</span><span class="p">)</span>
@@ -12390,7 +12399,7 @@ Wall time: 594 ms
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[48]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
@@ -12416,8 +12425,8 @@ purchase = json_normalize(json_records, &#39;products&#39;, [&#39;uid&#39;,&#39;
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 760 ms, sys: 12 ms, total: 772 ms
-Wall time: 770 ms
+<pre>CPU times: user 704 ms, sys: 16 ms, total: 720 ms
+Wall time: 721 ms
 </pre>
 </div>
 </div>
@@ -12520,6 +12529,473 @@ Wall time: 770 ms
 </div>
 </div>
 
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span> <span class="o">=</span> <span class="n">purchase</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;pid&#39;</span><span class="p">),</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;pid&#39;</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 45628 entries, 0 to 45627
+Data columns (total 10 columns):
+pid                 45628 non-null object
+quantity            45628 non-null float64
+date                45628 non-null object
+gender              45628 non-null object
+uid                 45628 non-null object
+current_price       45622 non-null float64
+original_price      36256 non-null float64
+category            45628 non-null object
+sub_category        45628 non-null object
+sub_sub_category    45628 non-null object
+dtypes: float64(3), object(7)
+memory usage: 3.5+ MB
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">categorical</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;sub_category&#39;</span><span class="p">,</span> <span class="s1">&#39;sub_sub_category&#39;</span><span class="p">,</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span>
+<span class="n">new_purchase</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">purchase</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">categorical</span><span class="p">)</span>
+<span class="n">new_purchase</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 45628 entries, 0 to 45627
+Columns: 109 entries, pid to gender_M
+dtypes: float64(3), object(3), uint8(103)
+memory usage: 6.6+ MB
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">new_purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[23]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pid</th>
+      <th>quantity</th>
+      <th>date</th>
+      <th>uid</th>
+      <th>current_price</th>
+      <th>original_price</th>
+      <th>category_11e623a37e87cf7995c466723ec99688d55cae8c</th>
+      <th>category_37b2661cc181c987f68770e43990152026920ba5</th>
+      <th>category_55599ee4735544f9319a030222f617a252d8ebf3</th>
+      <th>category_57ecb679698676e7a3ac843bef1e3f6844651a79</th>
+      <th>...</th>
+      <th>sub_sub_category_eb0619cfb60da489f61001b19331dad5d480f82b</th>
+      <th>sub_sub_category_ec6c67dfdd9a89bb590c67bdc7865bfdd2a810ee</th>
+      <th>sub_sub_category_ef76dd0072150112992c6db54e2a7d3d11c302cb</th>
+      <th>sub_sub_category_f08770a96fb546673053ab799f5ea9cada06c06a</th>
+      <th>sub_sub_category_f85ea193363a91d5d03995129ec35786cfa77e6f</th>
+      <th>sub_sub_category_f86a9cce8e46d9cac88fd9306a6515fef89fe3fc</th>
+      <th>sub_sub_category_f9e79addaa1175027c52d95685b4664fa7430f0f</th>
+      <th>sub_sub_category_fecdd01f32c4b0a1e0d2b70cc3891dc52f964329</th>
+      <th>gender_F</th>
+      <th>gender_M</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>db3eae1855619bd4462848bb7b473b219345ee87</td>
+      <td>1.0</td>
+      <td>2017-03-27 14:19:00</td>
+      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
+      <td>529.9</td>
+      <td>899.9</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>3aed9b0313f9226111de8aeabaedccf8db07d428</td>
+      <td>1.0</td>
+      <td>2017-03-27 14:19:00</td>
+      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
+      <td>469.9</td>
+      <td>799.9</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>418e19155782fc7f12ced8332c8ed025aec227a5</td>
+      <td>1.0</td>
+      <td>2016-05-26 11:21:40</td>
+      <td>07be0ebd1e6f2412e4a9a3f679ded05796a1e225</td>
+      <td>249.9</td>
+      <td>429.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>4b17c3aa28d53208c9fd147057b40fdd8108f790</td>
+      <td>1.0</td>
+      <td>2016-03-05 06:52:27</td>
+      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
+      <td>640.0</td>
+      <td>NaN</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>31771f432cbc8e7ee3140f70b1e866fb5a2d739a</td>
+      <td>1.0</td>
+      <td>2016-03-05 06:52:27</td>
+      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
+      <td>129.9</td>
+      <td>0.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>...</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 109 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">dummy_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;category_c1bd5fd999bd577743936898ada96496b547af3c&#39;</span><span class="p">,</span>
+<span class="s1">&#39;sub_category_f08770a96fb546673053ab799f5ea9cada06c06a&#39;</span><span class="p">,</span>
+<span class="s1">&#39;sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24&#39;</span><span class="p">,</span>
+<span class="s1">&#39;gender_F&#39;</span><span class="p">]</span>
+<span class="n">purchase2</span> <span class="o">=</span> <span class="n">new_purchase</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">dummy_cols</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">purchase2</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 45628 entries, 0 to 45627
+Columns: 105 entries, pid to gender_M
+dtypes: float64(3), object(3), uint8(99)
+memory usage: 6.4+ MB
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<hr>
+<h1 id="Machine-Learning-Algorithms">Machine Learning Algorithms<a class="anchor-link" href="#Machine-Learning-Algorithms">&#194;&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[55]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Separate-train-and-test-data">Separate train and test data<a class="anchor-link" href="#Separate-train-and-test-data">&#194;&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">features</span> <span class="o">=</span> <span class="n">purchase2</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">purchase2</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">X</span> <span class="o">=</span> <span class="n">purchase2</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">purchase2</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[71]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="n">gnb</span> <span class="o">=</span> <span class="n">GaussianNB</span><span class="p">()</span>
+<span class="n">gnb</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">gnb</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">gnb</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-72-842e125e25f0&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span><span class="ansi-blue-fg">()</span>
+<span class="ansi-green-intense-fg ansi-bold">      1</span> gnb <span class="ansi-blue-fg">=</span> GaussianNB<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-fg">----&gt; 2</span><span class="ansi-red-fg"> </span>gnb<span class="ansi-blue-fg">.</span>fit<span class="ansi-blue-fg">(</span>x_train<span class="ansi-blue-fg">,</span> y_train<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      3</span> y_pred <span class="ansi-blue-fg">=</span> gnb<span class="ansi-blue-fg">.</span>predict<span class="ansi-blue-fg">(</span>x_test<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">      4</span> score <span class="ansi-blue-fg">=</span> gnb<span class="ansi-blue-fg">.</span>score<span class="ansi-blue-fg">(</span>x_train<span class="ansi-blue-fg">,</span> y_train<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">/usr/local/lib/python2.7/dist-packages/sklearn/naive_bayes.pyc</span> in <span class="ansi-cyan-fg">fit</span><span class="ansi-blue-fg">(self, X, y, sample_weight)</span>
+<span class="ansi-green-intense-fg ansi-bold">    180</span>             Returns self<span class="ansi-blue-fg">.</span>
+<span class="ansi-green-intense-fg ansi-bold">    181</span>         &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 182</span><span class="ansi-red-fg">         </span>X<span class="ansi-blue-fg">,</span> y <span class="ansi-blue-fg">=</span> check_X_y<span class="ansi-blue-fg">(</span>X<span class="ansi-blue-fg">,</span> y<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    183</span>         return self._partial_fit(X, y, np.unique(y), _refit=True,
+<span class="ansi-green-intense-fg ansi-bold">    184</span>                                  sample_weight=sample_weight)
+
+<span class="ansi-green-fg">/usr/local/lib/python2.7/dist-packages/sklearn/utils/validation.pyc</span> in <span class="ansi-cyan-fg">check_X_y</span><span class="ansi-blue-fg">(X, y, accept_sparse, dtype, order, copy, force_all_finite, ensure_2d, allow_nd, multi_output, ensure_min_samples, ensure_min_features, y_numeric, warn_on_dtype, estimator)</span>
+<span class="ansi-green-intense-fg ansi-bold">    519</span>     X = check_array(X, accept_sparse, dtype, order, copy, force_all_finite,
+<span class="ansi-green-intense-fg ansi-bold">    520</span>                     ensure_2d<span class="ansi-blue-fg">,</span> allow_nd<span class="ansi-blue-fg">,</span> ensure_min_samples<span class="ansi-blue-fg">,</span>
+<span class="ansi-green-fg">--&gt; 521</span><span class="ansi-red-fg">                     ensure_min_features, warn_on_dtype, estimator)
+</span><span class="ansi-green-intense-fg ansi-bold">    522</span>     <span class="ansi-green-fg">if</span> multi_output<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-intense-fg ansi-bold">    523</span>         y = check_array(y, &#39;csr&#39;, force_all_finite=True, ensure_2d=False,
+
+<span class="ansi-green-fg">/usr/local/lib/python2.7/dist-packages/sklearn/utils/validation.pyc</span> in <span class="ansi-cyan-fg">check_array</span><span class="ansi-blue-fg">(array, accept_sparse, dtype, order, copy, force_all_finite, ensure_2d, allow_nd, ensure_min_samples, ensure_min_features, warn_on_dtype, estimator)</span>
+<span class="ansi-green-intense-fg ansi-bold">    380</span>                                       force_all_finite)
+<span class="ansi-green-intense-fg ansi-bold">    381</span>     <span class="ansi-green-fg">else</span><span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 382</span><span class="ansi-red-fg">         </span>array <span class="ansi-blue-fg">=</span> np<span class="ansi-blue-fg">.</span>array<span class="ansi-blue-fg">(</span>array<span class="ansi-blue-fg">,</span> dtype<span class="ansi-blue-fg">=</span>dtype<span class="ansi-blue-fg">,</span> order<span class="ansi-blue-fg">=</span>order<span class="ansi-blue-fg">,</span> copy<span class="ansi-blue-fg">=</span>copy<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    383</span> 
+<span class="ansi-green-intense-fg ansi-bold">    384</span>         <span class="ansi-green-fg">if</span> ensure_2d<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-red-fg">ValueError</span>: could not convert string to float: c37df0ae71b97699a478def3001a3516a905a51d</pre>
+</div>
 </div>
 
 </div>
