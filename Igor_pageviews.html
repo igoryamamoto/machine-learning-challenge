@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head><meta charset="utf-8" />
-<title>Igor</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
+<title>Igor_pageviews</title><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 
 <style type="text/css">
@@ -11769,7 +11769,7 @@ div#notebook {
 
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
@@ -11778,6 +11778,9 @@ div#notebook {
 <span class="kn">import</span> <span class="nn">gzip</span>
 <span class="kn">import</span> <span class="nn">seaborn</span> <span class="kn">as</span> <span class="nn">sns</span>
 <span class="kn">from</span> <span class="nn">pandas.io.json</span> <span class="kn">import</span> <span class="n">json_normalize</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
 <span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
 
@@ -11786,25 +11789,9 @@ div#notebook {
 </div>
 
 </div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Data-Cleaning">Data Cleaning<a class="anchor-link" href="#Data-Cleaning">&#194;&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Open-Catalog-dataset">Open Catalog dataset<a class="anchor-link" href="#Open-Catalog-dataset">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="n">catalog</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/catalog.gz&#39;</span><span class="p">)</span>
@@ -11817,589 +11804,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">catalog</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[3]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>pid</th>
-      <th>current_price</th>
-      <th>original_price</th>
-      <th>category</th>
-      <th>sub_category</th>
-      <th>sub_sub_category</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>c9fe04e5097c087b6b6eeccc3adc4a142e14aa46</td>
-      <td>699.0</td>
-      <td>NaN</td>
-      <td>c1bd5fd999bd577743936898ada96496b547af3c</td>
-      <td>f08770a96fb546673053ab799f5ea9cada06c06a</td>
-      <td>2d2c44a2d8f18a6271f0e8057313af68a46d0f24</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>e00988f42f7fc5f14ec6a0e7905789110f23c5de</td>
-      <td>150.0</td>
-      <td>NaN</td>
-      <td>37b2661cc181c987f68770e43990152026920ba5</td>
-      <td>11e623a37e87cf7995c466723ec99688d55cae8c</td>
-      <td>11e623a37e87cf7995c466723ec99688d55cae8c</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1e2e7c0d4082295728c1684a702cb43e1d332d3e</td>
-      <td>549.9</td>
-      <td>1049.9</td>
-      <td>c37df0ae71b97699a478def3001a3516a905a51d</td>
-      <td>f08770a96fb546673053ab799f5ea9cada06c06a</td>
-      <td>d6605426aaa703bf19874c0caac79a661b73de33</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>a279dd2284eb57533ca417c258ede0a0526a6f6e</td>
-      <td>0.0</td>
-      <td>0.0</td>
-      <td>c1bd5fd999bd577743936898ada96496b547af3c</td>
-      <td>6d9d48ae11ee1909235f31e9bfe5d36aa1462cb3</td>
-      <td>9a2e3cb56f6a1756fd35a4fd70172a67ecf13639</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>405b0362ae6ec149700164811b0e7773c8300e9d</td>
-      <td>79.9</td>
-      <td>0.0</td>
-      <td>c37df0ae71b97699a478def3001a3516a905a51d</td>
-      <td>78af0aac89e0f15a6c9fc70b5bff79d98c6dcc43</td>
-      <td>2541a58f702844477aab540e5df7b859a1e3d5de</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Open-dataset-with-a-JSON-object-per-line-with-NaN">Open dataset with a JSON object per line with NaN<a class="anchor-link" href="#Open-dataset-with-a-JSON-object-per-line-with-NaN">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-with gzip.open(&#39;data/test.gz&#39;, &#39;r&#39;) as f:
-    json_records = []
-    for line in f:
-        record = json.loads(line)
-        json_records.append(record)
-data = pd.DataFrame(json_records)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 4 ms, sys: 0 ns, total: 4 ms
-Wall time: 2.4 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[5]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>date</th>
-      <th>event_type</th>
-      <th>page_type</th>
-      <th>productId</th>
-      <th>products</th>
-      <th>source</th>
-      <th>timestamp</th>
-      <th>uid</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>NaN</td>
-      <td>pageview</td>
-      <td>cart</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2016-01-01</td>
-      <td>54cfe1703c536e98bf02c7c4cd5b4e280f07d74c</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>NaN</td>
-      <td>pageview</td>
-      <td>checkout</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2016-01-02</td>
-      <td>c808d5ecb73bee00a9730064b7652bec10778f20</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>NaN</td>
-      <td>pageview</td>
-      <td>checkout</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2016-01-02</td>
-      <td>7ba0cbaaf2000d440b474ff9182383c5525d0d56</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>NaN</td>
-      <td>pageview</td>
-      <td>confirmation</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2016-01-02</td>
-      <td>3b2790a1f746e59298c8c277e3ec2279343ce52d</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>NaN</td>
-      <td>pageview</td>
-      <td>checkout</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>2016-01-02</td>
-      <td>3b2790a1f746e59298c8c277e3ec2279343ce52d</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Open-only-purchase-events-from-data-dataset">Open only purchase events from data dataset<a class="anchor-link" href="#Open-only-purchase-events-from-data-dataset">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-with open(&#39;data/purchase_data&#39;, &#39;r&#39;) as f:
-    json_records = []
-    for line in f:
-        record = json.loads(line)
-        json_records.append(record)
-purchase = pd.DataFrame(json_records)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 532 ms, sys: 60 ms, total: 592 ms
-Wall time: 666 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[7]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>date</th>
-      <th>event_type</th>
-      <th>gender</th>
-      <th>products</th>
-      <th>source</th>
-      <th>uid</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2017-03-27 14:19:00</td>
-      <td>purchase</td>
-      <td>M</td>
-      <td>[{u'pid': u'db3eae1855619bd4462848bb7b473b2193...</td>
-      <td>desktop</td>
-      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2016-05-26 11:21:40</td>
-      <td>purchase</td>
-      <td>M</td>
-      <td>[{u'pid': u'418e19155782fc7f12ced8332c8ed025ae...</td>
-      <td>NaN</td>
-      <td>07be0ebd1e6f2412e4a9a3f679ded05796a1e225</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2016-03-05 06:52:27</td>
-      <td>purchase</td>
-      <td>M</td>
-      <td>[{u'pid': u'4b17c3aa28d53208c9fd147057b40fdd81...</td>
-      <td>NaN</td>
-      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2016-11-07 11:36:00</td>
-      <td>purchase</td>
-      <td>M</td>
-      <td>[{u'pid': u'acd9858f0d4d4c61ee783080a1a305b4f0...</td>
-      <td>desktop</td>
-      <td>7f1c45f10de66a7023bfa9f9ed053c5b3ae03f56</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>2016-08-28 20:48:58</td>
-      <td>purchase</td>
-      <td>M</td>
-      <td>[{u'pid': u'fca1dc5059edb8a8ee2fa424ce7a01958b...</td>
-      <td>NaN</td>
-      <td>79ddd2b0c65947a8a11249c2fa71499055507e11</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Unnest-products">Unnest products<a class="anchor-link" href="#Unnest-products">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-with open(&#39;data/purchase_data&#39;, &#39;r&#39;) as f:
-    json_records = []
-    for line in f:
-        record = json.loads(line)
-        products = record.pop(&#39;products&#39;)
-        record.pop(&#39;source&#39;)
-        record.pop(&#39;event_type&#39;)
-        for obj in products:
-            new_record = record.copy()
-            new_record.update(obj)
-            json_records.append(new_record)
-purchase = pd.DataFrame(json_records)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 580 ms, sys: 16 ms, total: 596 ms
-Wall time: 595 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[9]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>date</th>
-      <th>gender</th>
-      <th>pid</th>
-      <th>quantity</th>
-      <th>uid</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>2017-03-27 14:19:00</td>
-      <td>M</td>
-      <td>db3eae1855619bd4462848bb7b473b219345ee87</td>
-      <td>1.0</td>
-      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>2017-03-27 14:19:00</td>
-      <td>M</td>
-      <td>3aed9b0313f9226111de8aeabaedccf8db07d428</td>
-      <td>1.0</td>
-      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>2016-05-26 11:21:40</td>
-      <td>M</td>
-      <td>418e19155782fc7f12ced8332c8ed025aec227a5</td>
-      <td>1.0</td>
-      <td>07be0ebd1e6f2412e4a9a3f679ded05796a1e225</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>2016-03-05 06:52:27</td>
-      <td>M</td>
-      <td>4b17c3aa28d53208c9fd147057b40fdd8108f790</td>
-      <td>1.0</td>
-      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>2016-03-05 06:52:27</td>
-      <td>M</td>
-      <td>31771f432cbc8e7ee3140f70b1e866fb5a2d739a</td>
-      <td>1.0</td>
-      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Using-json_normalize">Using json_normalize<a class="anchor-link" href="#Using-json_normalize">&#194;&#182;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
@@ -12409,6 +11814,16 @@ with open(&#39;data/purchase_data&#39;, &#39;r&#39;) as f:
         record = json.loads(line)
         json_records.append(record)
 purchase = json_normalize(json_records, &#39;products&#39;, [&#39;uid&#39;,&#39;date&#39;,&#39;gender&#39;])
+purchase = purchase.join(catalog.set_index(&#39;pid&#39;), on=&#39;pid&#39;)
+categorical = [&#39;category&#39;, &#39;sub_category&#39;, &#39;sub_sub_category&#39;,&#39;gender&#39;]
+purchase = pd.get_dummies(purchase, columns=categorical)
+dummy_cols = [&#39;category_c1bd5fd999bd577743936898ada96496b547af3c&#39;,
+&#39;sub_category_f08770a96fb546673053ab799f5ea9cada06c06a&#39;,
+&#39;sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24&#39;,
+&#39;gender_F&#39;]
+purchase = purchase.drop(dummy_cols, 1)
+features = purchase.columns[6:-1]
+target = purchase.columns[-1]
 </pre></div>
 
 </div>
@@ -12425,8 +11840,54 @@ purchase = json_normalize(json_records, &#39;products&#39;, [&#39;uid&#39;,&#39;
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 776 ms, sys: 24 ms, total: 800 ms
-Wall time: 800 ms
+<pre>CPU times: user 884 ms, sys: 4 ms, total: 888 ms
+Wall time: 885 ms
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
+with open(&#39;data/purchase_target&#39;, &#39;r&#39;) as f:
+    json_records = []
+    for line in f:
+        record = json.loads(line)
+        json_records.append(record)
+purchase2 = json_normalize(json_records, &#39;products&#39;, [&#39;uid&#39;,&#39;date&#39;])
+purchase2 = purchase2.join(catalog.set_index(&#39;pid&#39;), on=&#39;pid&#39;)
+categorical = [&#39;category&#39;, &#39;sub_category&#39;, &#39;sub_sub_category&#39;]
+purchase2 = pd.get_dummies(purchase2, columns=categorical)
+dummy_cols = [&#39;category_c1bd5fd999bd577743936898ada96496b547af3c&#39;,
+&#39;sub_category_f08770a96fb546673053ab799f5ea9cada06c06a&#39;,
+&#39;sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24&#39;]
+purchase2 = purchase2.drop(dummy_cols, 1)
+features2 = purchase2.columns[6:]
+</pre></div>
+
+</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>CPU times: user 248 ms, sys: 0 ns, total: 248 ms
+Wall time: 248 ms
 </pre>
 </div>
 </div>
@@ -12440,107 +11901,10 @@ Wall time: 800 ms
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[11]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>pid</th>
-      <th>quantity</th>
-      <th>date</th>
-      <th>gender</th>
-      <th>uid</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>db3eae1855619bd4462848bb7b473b219345ee87</td>
-      <td>1.0</td>
-      <td>2017-03-27 14:19:00</td>
-      <td>M</td>
-      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>3aed9b0313f9226111de8aeabaedccf8db07d428</td>
-      <td>1.0</td>
-      <td>2017-03-27 14:19:00</td>
-      <td>M</td>
-      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>418e19155782fc7f12ced8332c8ed025aec227a5</td>
-      <td>1.0</td>
-      <td>2016-05-26 11:21:40</td>
-      <td>M</td>
-      <td>07be0ebd1e6f2412e4a9a3f679ded05796a1e225</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>4b17c3aa28d53208c9fd147057b40fdd8108f790</td>
-      <td>1.0</td>
-      <td>2016-03-05 06:52:27</td>
-      <td>M</td>
-      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>31771f432cbc8e7ee3140f70b1e866fb5a2d739a</td>
-      <td>1.0</td>
-      <td>2016-03-05 06:52:27</td>
-      <td>M</td>
-      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span> <span class="o">=</span> <span class="n">purchase</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">catalog</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;pid&#39;</span><span class="p">),</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;pid&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">new_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">features</span><span class="p">)</span><span class="o">&amp;</span><span class="nb">set</span><span class="p">(</span><span class="n">features2</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">purchase</span><span class="p">[</span><span class="n">new_features</span><span class="p">]</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">purchase</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12550,10 +11914,14 @@ Wall time: 800 ms
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">purchase</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
+forest = RandomForestClassifier(n_estimators=100)
+forest.fit(x_train, y_train)
+y_pred = forest.predict(x_test)
+score = metrics.accuracy_score(y_test, y_pred)
 </pre></div>
 
 </div>
@@ -12570,21 +11938,8 @@ Wall time: 800 ms
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 45628 entries, 0 to 45627
-Data columns (total 10 columns):
-pid                 45628 non-null object
-quantity            45628 non-null float64
-date                45628 non-null object
-gender              45628 non-null object
-uid                 45628 non-null object
-current_price       45622 non-null float64
-original_price      36256 non-null float64
-category            45628 non-null object
-sub_category        45628 non-null object
-sub_sub_category    45628 non-null object
-dtypes: float64(3), object(7)
-memory usage: 3.5+ MB
+<pre>CPU times: user 3.35 s, sys: 28 ms, total: 3.38 s
+Wall time: 3.38 s
 </pre>
 </div>
 </div>
@@ -12595,12 +11950,10 @@ memory usage: 3.5+ MB
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">categorical</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;category&#39;</span><span class="p">,</span> <span class="s1">&#39;sub_category&#39;</span><span class="p">,</span> <span class="s1">&#39;sub_sub_category&#39;</span><span class="p">,</span><span class="s1">&#39;gender&#39;</span><span class="p">]</span>
-<span class="n">new_purchase</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">purchase</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">categorical</span><span class="p">)</span>
-<span class="n">new_purchase</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
 </pre></div>
 
 </div>
@@ -12613,254 +11966,15 @@ memory usage: 3.5+ MB
 
 <div class="output_area">
 
-<div class="prompt"></div>
+<div class="prompt output_prompt">Out[18]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 45628 entries, 0 to 45627
-Columns: 109 entries, pid to gender_M
-dtypes: float64(3), object(3), uint8(103)
-memory usage: 6.6+ MB
-</pre>
-</div>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.75345167652859957</pre>
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">new_purchase</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[15]:</div>
-
-
-
-<div class="output_html rendered_html output_subarea output_execute_result">
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>pid</th>
-      <th>quantity</th>
-      <th>date</th>
-      <th>uid</th>
-      <th>current_price</th>
-      <th>original_price</th>
-      <th>category_11e623a37e87cf7995c466723ec99688d55cae8c</th>
-      <th>category_37b2661cc181c987f68770e43990152026920ba5</th>
-      <th>category_55599ee4735544f9319a030222f617a252d8ebf3</th>
-      <th>category_57ecb679698676e7a3ac843bef1e3f6844651a79</th>
-      <th>...</th>
-      <th>sub_sub_category_eb0619cfb60da489f61001b19331dad5d480f82b</th>
-      <th>sub_sub_category_ec6c67dfdd9a89bb590c67bdc7865bfdd2a810ee</th>
-      <th>sub_sub_category_ef76dd0072150112992c6db54e2a7d3d11c302cb</th>
-      <th>sub_sub_category_f08770a96fb546673053ab799f5ea9cada06c06a</th>
-      <th>sub_sub_category_f85ea193363a91d5d03995129ec35786cfa77e6f</th>
-      <th>sub_sub_category_f86a9cce8e46d9cac88fd9306a6515fef89fe3fc</th>
-      <th>sub_sub_category_f9e79addaa1175027c52d95685b4664fa7430f0f</th>
-      <th>sub_sub_category_fecdd01f32c4b0a1e0d2b70cc3891dc52f964329</th>
-      <th>gender_F</th>
-      <th>gender_M</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>db3eae1855619bd4462848bb7b473b219345ee87</td>
-      <td>1.0</td>
-      <td>2017-03-27 14:19:00</td>
-      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
-      <td>529.9</td>
-      <td>899.9</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>3aed9b0313f9226111de8aeabaedccf8db07d428</td>
-      <td>1.0</td>
-      <td>2017-03-27 14:19:00</td>
-      <td>1f9acd4f729c04e18e5d72bebca5e5524e67687e</td>
-      <td>469.9</td>
-      <td>799.9</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>418e19155782fc7f12ced8332c8ed025aec227a5</td>
-      <td>1.0</td>
-      <td>2016-05-26 11:21:40</td>
-      <td>07be0ebd1e6f2412e4a9a3f679ded05796a1e225</td>
-      <td>249.9</td>
-      <td>429.0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>4b17c3aa28d53208c9fd147057b40fdd8108f790</td>
-      <td>1.0</td>
-      <td>2016-03-05 06:52:27</td>
-      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
-      <td>640.0</td>
-      <td>NaN</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>1</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>31771f432cbc8e7ee3140f70b1e866fb5a2d739a</td>
-      <td>1.0</td>
-      <td>2016-03-05 06:52:27</td>
-      <td>3cf9949b8f90daadd8f67ec46214e64d6b9cfa5b</td>
-      <td>129.9</td>
-      <td>0.0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>...</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>0</td>
-      <td>1</td>
-    </tr>
-  </tbody>
-</table>
-<p>5 rows × 109 columns</p>
-</div>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">dummy_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;category_c1bd5fd999bd577743936898ada96496b547af3c&#39;</span><span class="p">,</span>
-<span class="s1">&#39;sub_category_f08770a96fb546673053ab799f5ea9cada06c06a&#39;</span><span class="p">,</span>
-<span class="s1">&#39;sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24&#39;</span><span class="p">,</span>
-<span class="s1">&#39;gender_F&#39;</span><span class="p">]</span>
-<span class="n">purchase2</span> <span class="o">=</span> <span class="n">new_purchase</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">dummy_cols</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">purchase2</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
-RangeIndex: 45628 entries, 0 to 45627
-Columns: 105 entries, pid to gender_M
-dtypes: float64(3), object(3), uint8(99)
-memory usage: 6.4+ MB
-</pre>
-</div>
 </div>
 
 </div>
@@ -12872,82 +11986,24 @@ memory usage: 6.4+ MB
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <hr>
-<h1 id="Machine-Learning-Algorithms">Machine Learning Algorithms<a class="anchor-link" href="#Machine-Learning-Algorithms">&#194;&#182;</a></h1>
+<p>Pageviews</p>
+<hr>
+
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[40]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">from</span> <span class="nn">sklearn.naive_bayes</span> <span class="kn">import</span> <span class="n">GaussianNB</span>
-<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">KNeighborsClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.tree</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">metrics</span>
-<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">linear_model</span>
-<span class="kn">from</span> <span class="nn">sklearn.ensemble</span> <span class="kn">import</span> <span class="n">GradientBoostingClassifier</span>
-<span class="kn">from</span> <span class="nn">sklearn.svm</span> <span class="kn">import</span> <span class="n">LinearSVC</span>
-<span class="kn">from</span> <span class="nn">sklearn.calibration</span> <span class="kn">import</span> <span class="n">calibration_curve</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Separate-train-and-test-data">Separate train and test data<a class="anchor-link" href="#Separate-train-and-test-data">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">features</span> <span class="o">=</span> <span class="n">purchase2</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">target</span> <span class="o">=</span> <span class="n">purchase2</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Gambiarra-:-nem-todas-as-features-t&#227;o-no-target">Gambiarra : nem todas as features t&#227;o no target<a class="anchor-link" href="#Gambiarra-:-nem-todas-as-features-t&#227;o-no-target">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-with open(&#39;data/purchase_target&#39;, &#39;r&#39;) as f:
+with open(&#39;data/products_data&#39;, &#39;r&#39;) as f:
     json_records = []
     for line in f:
         record = json.loads(line)
         json_records.append(record)
-purchase3 = json_normalize(json_records, &#39;products&#39;, [&#39;uid&#39;,&#39;date&#39;])
-purchase3 = purchase3.join(catalog.set_index(&#39;pid&#39;), on=&#39;pid&#39;)
-categorical = [&#39;category&#39;, &#39;sub_category&#39;, &#39;sub_sub_category&#39;]
-new_purchase2 = pd.get_dummies(purchase3, columns=categorical)
-dummy_cols = [&#39;category_c1bd5fd999bd577743936898ada96496b547af3c&#39;,
-&#39;sub_category_f08770a96fb546673053ab799f5ea9cada06c06a&#39;,
-&#39;sub_sub_category_2d2c44a2d8f18a6271f0e8057313af68a46d0f24&#39;]
-purchase4 = new_purchase2.drop(dummy_cols, 1)
-features2 = purchase4.columns[6:]
+pageview = pd.DataFrame(json_records)
 </pre></div>
 
 </div>
@@ -12964,52 +12020,12 @@ features2 = purchase4.columns[6:]
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 256 ms, sys: 0 ns, total: 256 ms
-Wall time: 256 ms
+<pre>CPU times: user 7.96 s, sys: 320 ms, total: 8.28 s
+Wall time: 9.11 s
 </pre>
 </div>
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">new_features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">features</span><span class="p">)</span><span class="o">&amp;</span><span class="nb">set</span><span class="p">(</span><span class="n">features2</span><span class="p">))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">X</span> <span class="o">=</span> <span class="n">purchase2</span><span class="p">[</span><span class="n">new_features</span><span class="p">]</span>
-<span class="n">Y</span> <span class="o">=</span> <span class="n">purchase2</span><span class="p">[</span><span class="n">target</span><span class="p">]</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-</pre></div>
-
-</div>
 </div>
 </div>
 
@@ -13019,52 +12035,7 @@ Wall time: 256 ms
 <div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="nb">len</span><span class="p">(</span><span class="n">x_train</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[23]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>86</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Naive-Bayes">Naive Bayes<a class="anchor-link" href="#Naive-Bayes">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-gnb = GaussianNB()
-gnb.fit(x_train, y_train)
-y_pred = gnb.predict(x_test)
-score = metrics.accuracy_score(y_test, y_pred)
+<div class=" highlight hl-ipython2"><pre><span class="n">pageview</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -13081,725 +12052,22 @@ score = metrics.accuracy_score(y_test, y_pred)
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 76 ms, sys: 12 ms, total: 88 ms
-Wall time: 86.4 ms
+<pre>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 545617 entries, 0 to 545616
+Data columns (total 7 columns):
+event_type    545617 non-null object
+gender        545617 non-null object
+page_type     545617 non-null object
+productId     545617 non-null object
+source        368146 non-null object
+timestamp     545617 non-null object
+uid           545617 non-null object
+dtypes: object(7)
+memory usage: 29.1+ MB
 </pre>
 </div>
 </div>
 
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[25]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.48197457812842426</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="KNeighborsClassifier">KNeighborsClassifier<a class="anchor-link" href="#KNeighborsClassifier">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-knn = KNeighborsClassifier(n_neighbors=1)
-knn.fit(x_train, y_train)
-y_pred = knn.predict(x_test)
-score = metrics.accuracy_score(y_test, y_pred)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 1min 10s, sys: 60 ms, total: 1min 10s
-Wall time: 1min 10s
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[20]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.71137409598948065</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Decision-Tree">Decision Tree<a class="anchor-link" href="#Decision-Tree">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-tree = DecisionTreeClassifier()
-tree.fit(x_train, y_train)
-y_pred = tree.predict(x_test)
-score = metrics.accuracy_score(y_test, y_pred)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 176 ms, sys: 0 ns, total: 176 ms
-Wall time: 172 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[27]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.75345167652859957</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Forest-Tree">Forest Tree<a class="anchor-link" href="#Forest-Tree">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-forest = RandomForestClassifier(n_estimators=100)
-forest.fit(x_train, y_train)
-y_pred = tree.predict(x_test)
-score = metrics.accuracy_score(y_test, y_pred)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 6.37 s, sys: 0 ns, total: 6.37 s
-Wall time: 6.36 s
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[44]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.75345167652859957</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="xgboost">xgboost<a class="anchor-link" href="#xgboost">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[35]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-boost = GradientBoostingClassifier()
-boost.fit(x_train, y_train)
-y_pred = boost.predict(x_test)
-score = metrics.accuracy_score(y_test, y_pred)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 5.45 s, sys: 4 ms, total: 5.46 s
-Wall time: 5.45 s
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[36]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[36]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.75076703922857768</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="SGDClassifier">SGDClassifier<a class="anchor-link" href="#SGDClassifier">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">clf</span> <span class="o">=</span> <span class="n">linear_model</span><span class="o">.</span><span class="n">SGDClassifier</span><span class="p">()</span>
-<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-<span class="n">y_pred</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
-<span class="n">score</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[32]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.74786324786324787</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Logistic-Regression">Logistic Regression<a class="anchor-link" href="#Logistic-Regression">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[38]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-clf = linear_model.LogisticRegression(C=1e5)
-clf.fit(x_train, y_train)
-y_pred = clf.predict(x_test)
-score = metrics.accuracy_score(y_test, y_pred)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 452 ms, sys: 8 ms, total: 460 ms
-Wall time: 452 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[39]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.74983563445101908</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="SVM">SVM<a class="anchor-link" href="#SVM">&#194;&#182;</a></h2>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[49]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="o">%%</span><span class="k">time</span>
-svc = LinearSVC(C=1.0)
-svc.fit(x_train, y_train)
-y_pred = svc.predict(x_test)
-score = metrics.accuracy_score(y_test, y_pred)
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 356 ms, sys: 0 ns, total: 356 ms
-Wall time: 345 ms
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[50]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">score</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[50]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>0.74983563445101908</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<hr>
-<h1 id="Generate-output">Generate output<a class="anchor-link" href="#Generate-output">&#194;&#182;</a></h1>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">X</span> <span class="o">=</span> <span class="n">purchase4</span><span class="p">[</span><span class="n">new_features</span><span class="p">]</span>
-<span class="n">answer</span> <span class="o">=</span> <span class="n">tree</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="nb">len</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[27]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>12681</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">users</span> <span class="o">=</span> <span class="n">purchase4</span><span class="o">.</span><span class="n">uid</span><span class="o">.</span><span class="n">values</span>
-<span class="nb">len</span><span class="p">(</span><span class="n">users</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[32]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>12681</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[33]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">users</span><span class="p">))</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-<div class="prompt output_prompt">Out[33]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>3209</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[37]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="n">ans</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">u</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">users</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">answer</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="s1">&#39;M&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">g</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
-    <span class="n">obj</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span><span class="n">g</span><span class="p">}</span>
-    <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</pre></div>
-
-</div>
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[39]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="kn">import</span> <span class="nn">csv</span>
-
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;ans.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
-    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">ans</span><span class="p">:</span>
-        <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-</pre></div>
-
-</div>
 </div>
 </div>
 
@@ -13809,10 +12077,7 @@ Wall time: 345 ms
 <div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;ans79.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictWriter</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">fieldnames</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
-    <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">ans</span><span class="p">:</span>
-        <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+<div class=" highlight hl-ipython2"><pre> 
 </pre></div>
 
 </div>

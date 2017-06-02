@@ -353,5 +353,8 @@ with open('ans.csv', 'wb') as f:
 # In[ ]:
 
 
-
+with open('ans79.csv', 'r') as f:
+    w = csv.DictWriter(f, fieldnames=['a','b'])
+    for obj in ans:
+        w.writerow(obj)
 
