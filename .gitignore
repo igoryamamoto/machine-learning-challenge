@@ -2,7 +2,10 @@
 data/data*
 data/catalog*
 data/target*
-data/p*
+data/sub*
+data/old*
+data/original
+*.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -1,27 +1,14 @@
-# Get file name to be splitted as argument
 file_name=$1
 
-# Begining of products pageview events
-products=$(grep productId -m 1 -n $file_name | cut -f 1 -d :)
+mkdir sub_$file_name
+grep productId $file_name > sub_$file_name/products
+grep purchase $file_name > sub_$file_name/purchase
+grep cart $file_name > sub_$file_name/cart
+grep checkout $file_name > sub_$file_name/checkout
+grep confirmation $file_name > sub_$file_name/confirmation
+grep home $file_name > sub_$file_name/home
+grep \"category $file_name > sub_$file_name/category
+grep search $file_name > sub_$file_name/search
+grep subcategory $file_name > sub_$file_name/subcategory
+grep brand_landing $file_name > sub_$file_name/brand_landing
 
-# Begining of products purchase
-purchase=$(grep purchase -m 1 -n $file_name | cut -f 1 -d :)
-
-# Total number of lines
-total=$(wc -l $file_name | cut -f 1 -d ' ')
-
-# Split data file (it works if the top part is larger than the bottom, otherwise it'll create a lot of subfiles) 
-split -l $(($products - 1)) $file_name split_ -a 1
-
-mv split_a pageviews_$file_name
-
-T=$(($purchase - $products))
-B=$(($total - $purchase))
-
-# Create products file
-head -n $T split_b > products_$file_name
-
-# Create purchase file
-tail -n $B split_b > purchase_$file_name
-
-rm split_b
