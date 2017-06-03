@@ -169,12 +169,6 @@ with open('ans8.csv', 'wb') as f:
 data.head()
 
 
-# In[88]:
-
-
-g = sns.jointplot(x="date_3", y="gender", data=data)
-
-
 # In[ ]:
 
 
