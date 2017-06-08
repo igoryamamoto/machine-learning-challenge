@@ -5,8 +5,7 @@ Machine Learning Challenge from Chaordic
 ---
 ## Description of project files
 
-* data/split_data.sh : bash script to split dataset in 3 parts
-
+* data/split_data.sh : bash script to split dataset
     * e.g.:$./split_data.sh data
 
 * data/stats.sh : bash script to count masculine/feminine gender 
