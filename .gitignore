@@ -6,6 +6,7 @@ data/sub*
 data/old*
 data/original
 data/p*
+data/g*
 *.html
 ans*
 *.pkl
