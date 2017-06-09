@@ -19,7 +19,7 @@ from sklearn.externals import joblib
 get_ipython().magic(u'matplotlib inline')
 
 
-# In[11]:
+# In[2]:
 
 
 def open_json(data_file):    
@@ -74,13 +74,13 @@ def get_target_pageview(page_type):
 
 # ## Create 5 DataFrames: catalog, purchase, pageview, target_purchase, target_pageview
 
-# In[16]:
+# In[23]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u"catalog = pd.read_csv('data/catalog', usecols=['pid', 'current_price','original_price', 'category', 'sub_category', 'sub_sub_category'])\ncatalog = catalog.fillna(value=0)\ncatalog = catalog[catalog.current_price!=0]\ncatalog['original_price'] = np.where(catalog['original_price'] == 0, catalog['current_price'], catalog['original_price'])\ncatalog['diff_price'] = catalog['original_price'] - catalog['current_price']\n\npurchase_data = open_json('data/sub_data/purchase')           \npurchase = json_normalize(purchase_data, 'products', ['date','gender','uid'])\n\npageview_data = open_json('data/sub_data/products')   \npageview = pd.DataFrame(pageview_data, columns=['productId', 'timestamp', 'gender', 'uid'])\npageview.columns = ['pid', 'date', 'gender', 'uid']\n\n\npurchase_data = open_json('data/sub_target/purchase')           \ntarget_purchase = json_normalize(purchase_data, 'products', ['date','uid'])\n\npageview_data = open_json('data/sub_target/products')   \ntarget_pageview = pd.DataFrame(pageview_data, columns=['productId', 'timestamp', 'uid'])\ntarget_pageview.columns = ['pid', 'date', 'uid']")
 
 
-# In[17]:
+# In[ ]:
 
 
 catalog.to_csv('catalog_transformed.csv')
@@ -92,7 +92,7 @@ target_pageview.to_csv('raw_target_product_pageview.csv')
 
 # ## Transform gender and date into numbers
 
-# In[18]:
+# In[24]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u"purchase.gender = list(map(gender_to_bin, purchase.gender.values))\n#purchase['hour'] = purchase['date']\npurchase['month'] = purchase['date']\n#purchase['day'] = purchase['date']\n#pageview['hour'] = pageview['date']\n#pageview['month'] = pageview['date']\n#pageview['day'] = pageview['date']\n#purchase.day = list(map(lambda t:convert_date(t).day, purchase.day.values))\npurchase.month = list(map(lambda t:convert_date(t).month, purchase.month.values))\n#purchase.hour = list(map(lambda t:convert_date(t).hour, purchase.hour.values))\npurchase.date = list(map(to_weekday, purchase.date.values))\npageview.gender = list(map(gender_to_bin, pageview.gender.values))\n#pageview.day = list(map(lambda t:convert_date(t).day, pageview.day.values))\n#pageview.month = list(map(lambda t:convert_date(t).month, pageview.month.values))\n#pageview.hour = list(map(lambda t:convert_date(t).hour, pageview.hour.values))\npageview.date = list(map(to_weekday, pageview.date.values))\n\n#target_purchase['hour'] = target_purchase['date']\ntarget_purchase['month'] = target_purchase['date']\n#target_purchase['day'] = target_purchase['date']\n#target_pageview['hour'] = target_pageview['date']\n#target_pageview['month'] = target_pageview['date']\n#target_pageview['day'] = target_pageview['date']\n#target_purchase.day = list(map(lambda t:convert_date(t).day, target_purchase.day.values))\ntarget_purchase.month = list(map(lambda t:convert_date(t).month, target_purchase.month.values))\n#target_purchase.hour = list(map(lambda t:convert_date(t).hour, target_purchase.hour.values))\ntarget_purchase.date = list(map(to_weekday, target_purchase.date.values))\n#target_pageview.day = list(map(lambda t:convert_date(t).day, target_pageview.day.values))\n#target_pageview.month = list(map(lambda t:convert_date(t).month, target_pageview.month.values))\n#target_pageview.hour = list(map(lambda t:convert_date(t).hour, target_pageview.hour.values))\ntarget_pageview.date = list(map(to_weekday, target_pageview.date.values))")
@@ -104,7 +104,7 @@ get_ipython().run_cell_magic(u'time', u'', u"purchase.gender = list(map(gender_t
 target_pageview.date.values
 
 
-# In[20]:
+# In[ ]:
 
 
 purchase.to_csv('transformed_purchase.csv')
@@ -115,7 +115,7 @@ target_pageview.to_csv('transformed_target_product_pageview.csv')
 
 # ## Set dummies vars for categorical features
 
-# In[21]:
+# In[25]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u"categorical_p = ['category', 'sub_category', 'sub_sub_category', 'date','month']\ncategorical_v = ['category', 'sub_category', 'sub_sub_category', 'date']\n\npurchase = purchase.join(catalog.set_index('pid'), on='pid')\npurchase = pd.get_dummies(purchase, columns=categorical_p).iloc[:,1:]\n\npageview = pageview.join(catalog.set_index('pid'), on='pid')\npageview = pd.get_dummies(pageview, columns=categorical_v).iloc[:,1:]\n\ntarget_purchase = target_purchase.join(catalog.set_index('pid'), on='pid')\ntarget_purchase = pd.get_dummies(target_purchase, columns=categorical_p).iloc[:,1:]\n\ntarget_pageview = target_pageview.join(catalog.set_index('pid'), on='pid')\ntarget_pageview = pd.get_dummies(target_pageview, columns=categorical_v).iloc[:,1:]")
@@ -132,7 +132,7 @@ target_pageview.to_csv('dummy_target_product_pageview.csv')
 
 # ## Merge users with same uid (sum entries) and join DFs
 
-# In[23]:
+# In[26]:
 
 
 purchase.current_price = purchase.current_price.values*purchase.quantity
@@ -144,13 +144,13 @@ target_purchase.original_price = target_purchase.original_price.values*target_pu
 target_purchase.diff_price = target_purchase.diff_price.values*target_purchase.quantity
 
 
-# In[24]:
+# In[27]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u"purchase = purchase.groupby(['uid','gender'], as_index=False).sum()\npageview = pageview.groupby(['uid','gender'], as_index=False).sum()\ndata = purchase.join(pageview.set_index(['uid','gender']), on=['uid','gender'], rsuffix='_v')\n\n\ntarget_purchase = target_purchase.groupby(['uid'], as_index=False).sum()\ntarget_pageview = target_pageview.groupby(['uid'], as_index=False).sum()\ntarget_data = target_purchase.join(target_pageview.set_index('uid'), on='uid', rsuffix='_v')")
 
 
-# In[25]:
+# In[8]:
 
 
 purchase.to_csv('grouped_purchase.csv')
@@ -159,7 +159,7 @@ target_purchase.to_csv('grouped_target_purchase.csv')
 target_pageview.to_csv('grouped_target_product_pageview.csv')
 
 
-# In[26]:
+# In[18]:
 
 
 data.to_csv('final_data.csv')
@@ -190,7 +190,7 @@ len(search.uid.values)
 
 # ## Train and Evaluate Model
 
-# In[27]:
+# In[28]:
 
 
 data = data.fillna(value=0)
@@ -205,12 +205,16 @@ features = list(set(features)&set(features2))
 
 
 f = np.array(features)
+f.tofile('features.csv',sep=',')
 
 
 # In[34]:
 
 
-f.tofile('features.csv',sep=',')
+ultimate_data = data[[target]+features]
+ultimate_target = target_data[features]
+ultimate_data.to_csv('ultimate_data.csv',index=False)
+ultimate_target.to_csv('ultimate_target.csv',index=False)
 
 
 # In[98]:
@@ -229,7 +233,7 @@ f.tofile('features.csv',sep=',')
 
 X = data[features]
 Y = data[target]
-x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=32)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=42)
 
 
 # In[146]:
@@ -264,8 +268,8 @@ print score1, score2, score3
 # In[38]:
 
 
-X = target_data[features]
-answer = clf.predict(X)
+targ_X = target_data[features]
+answer = clf.predict(targ_X)
 users = target_data.uid.values
 ans = []
 for i,u in enumerate(users):
@@ -278,16 +282,61 @@ for i,u in enumerate(users):
     
 import csv
 
-with open('ans12.csv', 'wb') as f:
+with open('ans14.csv', 'wb') as f:
     w = csv.DictWriter(f, fieldnames=['a','b'])
     for obj in ans:
         w.writerow(obj)
 
 
-# In[160]:
+# In[21]:
 
 
-forest.max
+target_X = target_data[features]
+target_X.to_csv('target_X.csv')
+
+
+# ## Hack
+
+# In[52]:
+
+
+it = 100
+targ_X = target_data[features]
+hack_answer = clf.predict(targ_X)
+score = metrics.accuracy_score(y_test, y_pred)
+for i in range(it-1):
+    x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=i)
+    clf.fit(x_train, y_train)
+    y_pred = clf.predict(x_test)
+    score1 = metrics.accuracy_score(y_test, y_pred)
+    score = score + score1
+    new = clf.predict(targ_X)
+    hack_answer = hack_answer + new
+hack_answer = np.round((1.0*hack_answer)/it)
+score = (1.0*score)/it
+
+users = target_data.uid.values
+ans = []
+for i,u in enumerate(users):
+    if hack_answer[i]:
+        g = 'M'
+    else:
+        g = 'F'
+    obj = {'a':u, 'b':g}
+    ans.append(obj)
+    
+import csv
+
+with open('hack1.csv', 'wb') as f:
+    w = csv.DictWriter(f, fieldnames=['a','b'])
+    for obj in ans:
+        w.writerow(obj)
+
+
+# In[53]:
+
+
+score
 
 
 # In[ ]:
