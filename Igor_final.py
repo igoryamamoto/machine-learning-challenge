@@ -129,14 +129,18 @@ target_pageview.to_csv('grouped_target_product_pageview_data.csv')
 
 # ## Additional features
 
-# In[7]:
+# In[97]:
 
 
-search = get_data_pageview('home')
-target_search = get_target_pageview('home')
-
+search = get_data_pageview('search')
+target_search = get_target_pageview('search')
 data2 = data.join(search.set_index(['uid','gender']), on=['uid','gender'], rsuffix='_s')
 target_data2 = target_data.join(target_search.set_index('uid'), on='uid', rsuffix='_s')
+
+home = get_data_pageview('home')
+target_home = get_target_pageview('home')
+data2 = data2.join(home.set_index(['uid','gender']), on=['uid','gender'], rsuffix='_s')
+target_data2 = target_data2.join(target_home.set_index('uid'), on='uid', rsuffix='_s')
 
 
 # In[8]:
@@ -150,32 +154,46 @@ len(search.uid.values)
 
 data = data.fillna(value=0)
 target_data = target_data.fillna(value=0)
-
-
-# In[50]:
-
-
 features = data.columns[2:]
 target = data.columns[1]
 features2 = target_data.columns[1:]
 features = list(set(features)&set(features2))
 
 
-# In[51]:
+# In[98]:
+
+
+data2 = data2.fillna(value=0)
+target_data2 = target_data2.fillna(value=0)
+features = data2.columns[2:]
+target = data2.columns[1]
+features2 = target_data2.columns[1:]
+features = list(set(features)&set(features2))
+
+
+# In[94]:
 
 
 X = data[features]
 Y = data[target]
-x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.4, random_state=23492)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=32)
 
 
-# In[52]:
+# In[146]:
+
+
+X = data2[features]
+Y = data2[target]
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.35, random_state=42)
+
+
+# In[147]:
 
 
 get_ipython().run_cell_magic(u'time', u'', u"forest = RandomForestClassifier(n_estimators=100)\nforest.fit(x_train, y_train)\ny_pred = forest.predict(x_test)\nscore1 = metrics.accuracy_score(y_test, y_pred)\nscore2 = metrics.f1_score(y_test, y_pred, average='binary')\nscore3 = metrics.roc_auc_score(y_test, y_pred)\n#joblib.dump(forest, '83.pkl')\nprint score1, score2, score3")
 
 
-# In[53]:
+# In[148]:
 
 
 from sklearn.ensemble import GradientBoostingClassifier
@@ -190,11 +208,11 @@ print score1, score2, score3
 
 # ## Output
 
-# In[16]:
+# In[57]:
 
 
 X = target_data[features]
-answer = forest.predict(X)
+answer = clf.predict(X)
 users = target_data.uid.values
 ans = []
 for i,u in enumerate(users):
@@ -207,16 +225,16 @@ for i,u in enumerate(users):
     
 import csv
 
-with open('ans10.csv', 'wb') as f:
+with open('ans12.csv', 'wb') as f:
     w = csv.DictWriter(f, fieldnames=['a','b'])
     for obj in ans:
         w.writerow(obj)
 
 
-# In[18]:
+# In[160]:
 
 
-data.to_csv('final_data.csv')
+forest.max
 
 
 # In[ ]:
