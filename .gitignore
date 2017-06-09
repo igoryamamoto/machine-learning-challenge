@@ -5,6 +5,7 @@ data/target*
 data/sub*
 data/old*
 data/original
+data/p*
 *.html
 ans*
 *.pkl
