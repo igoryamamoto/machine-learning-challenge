@@ -297,7 +297,7 @@ target_X.to_csv('target_X.csv')
 
 # ## Hack
 
-# In[52]:
+# In[54]:
 
 
 it = 100
@@ -308,6 +308,13 @@ for i in range(it-1):
     x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=i)
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
+    score1 = metrics.accuracy_score(y_test, y_pred)
+    score = score + score1
+    new = clf.predict(targ_X)
+    hack_answer = hack_answer + new
+    
+    forest.fit(x_train, y_train)
+    y_pred = forest.predict(x_test)
     score1 = metrics.accuracy_score(y_test, y_pred)
     score = score + score1
     new = clf.predict(targ_X)
@@ -333,10 +340,17 @@ with open('hack1.csv', 'wb') as f:
         w.writerow(obj)
 
 
-# In[53]:
+# In[55]:
 
 
 score
+
+
+# In[61]:
+
+
+u = pd.DataFrame(users,columns=['user'])
+u.to_csv('users.csv',index=False)
 
 
 # In[ ]:

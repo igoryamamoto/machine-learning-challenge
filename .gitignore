@@ -7,6 +7,7 @@ data/old*
 data/original
 data/p*
 data/g*
+hack*
 *.html
 ans*
 *.pkl
