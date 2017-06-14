@@ -19,6 +19,8 @@ from sklearn.externals import joblib
 get_ipython().magic(u'matplotlib inline')
 
 
+# ## Utils
+
 # In[2]:
 
 
@@ -72,7 +74,7 @@ def get_target_pageview(page_type):
     return df.groupby(['uid'], as_index=False).sum()
 
 
-# ## Create 5 DataFrames: catalog, purchase, pageview, target_purchase, target_pageview
+# ## Create DataFrames (catalog, purchase, pageview, target_purchase, target_pageview) from datasets
 
 # In[23]:
 
@@ -130,7 +132,7 @@ target_purchase.to_csv('dummy_target_purchase.csv')
 target_pageview.to_csv('dummy_target_product_pageview.csv')
 
 
-# ## Merge users with same uid (sum entries) and join DFs
+# ## Merge users with same uid (sum entries) and join DataFrames
 
 # In[26]:
 
@@ -166,7 +168,7 @@ data.to_csv('final_data.csv')
 target_data.to_csv('final_target_data.csv')
 
 
-# ## Additional features
+# ## Additional features (not used)
 
 # In[97]:
 
@@ -293,68 +295,4 @@ with open('ans14.csv', 'wb') as f:
 
 target_X = target_data[features]
 target_X.to_csv('target_X.csv')
-
-
-# ## Hack
-
-# In[54]:
-
-
-it = 100
-targ_X = target_data[features]
-hack_answer = clf.predict(targ_X)
-score = metrics.accuracy_score(y_test, y_pred)
-for i in range(it-1):
-    x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=i)
-    clf.fit(x_train, y_train)
-    y_pred = clf.predict(x_test)
-    score1 = metrics.accuracy_score(y_test, y_pred)
-    score = score + score1
-    new = clf.predict(targ_X)
-    hack_answer = hack_answer + new
-    
-    forest.fit(x_train, y_train)
-    y_pred = forest.predict(x_test)
-    score1 = metrics.accuracy_score(y_test, y_pred)
-    score = score + score1
-    new = clf.predict(targ_X)
-    hack_answer = hack_answer + new
-hack_answer = np.round((1.0*hack_answer)/it)
-score = (1.0*score)/it
-
-users = target_data.uid.values
-ans = []
-for i,u in enumerate(users):
-    if hack_answer[i]:
-        g = 'M'
-    else:
-        g = 'F'
-    obj = {'a':u, 'b':g}
-    ans.append(obj)
-    
-import csv
-
-with open('hack1.csv', 'wb') as f:
-    w = csv.DictWriter(f, fieldnames=['a','b'])
-    for obj in ans:
-        w.writerow(obj)
-
-
-# In[55]:
-
-
-score
-
-
-# In[61]:
-
-
-u = pd.DataFrame(users,columns=['user'])
-u.to_csv('users.csv',index=False)
-
-
-# In[ ]:
-
-
-
 
